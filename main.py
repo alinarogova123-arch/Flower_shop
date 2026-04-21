@@ -5,7 +5,7 @@ from telebot import types
 from environs import Env
 
 
-
+USER_DATA = {}
 env = Env()
 env.read_env()
 tg_bot_token = env.str("POSTING_TELEGRAM_BOT_API_KEY")
@@ -17,7 +17,7 @@ with open('data_base.json', "r", encoding="utf8") as my_file:
 
 @bot.message_handler(commands=['start'])
 def start_button_message(message):
-    markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup=types.ReplyKeyboardMarkup(resize_keyboard=False)
     item1=types.KeyboardButton("День рождения", )
     item2=types.KeyboardButton("Свадьба")
     item3=types.KeyboardButton("В школу")
@@ -41,7 +41,7 @@ def start_button_message(message):
 )
 def message_reply(message):
     if message.text != "Другой повод":
-        markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
+        markup=types.ReplyKeyboardMarkup(resize_keyboard=False)
         item1=types.KeyboardButton("До 500")
         item2=types.KeyboardButton("До 1000")
         item3=types.KeyboardButton("До 2000")
@@ -70,39 +70,35 @@ def message_reply(message):
 )
 def message_reply_next(message):
     markup = types.InlineKeyboardMarkup()
-    btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
+    btn1 = types.InlineKeyboardButton("Заказать букет", callback_data='Заказ')
     markup.add(btn1)
     if message.text == "До 500":
         with open(data_base[0]["img"], 'rb') as file:
             bot.send_photo(
                 message.chat.id,
                 photo=file,
-                reply_markup=markup,
-                caption=data_base[0]["name"] + data_base[0]["structure"]+data_base[0]["meaning"]+data_base[0]["price"],
+                caption=data_base[0]["name"]+data_base[0]["structure"]+data_base[0]["meaning"]+data_base[0]["price"],
             )
-    elif message.text == "До 1000":
+    if message.text == "До 1000":
         with open(data_base[1]["img"], 'rb') as file:
             bot.send_photo(
                 message.chat.id,
                 photo=file,
-                reply_markup=markup,
-                caption=data_base[1]["name"] + data_base[1]["structure"]+data_base[1]["meaning"]+data_base[1]["price"],
+                caption=data_base[1]["name"]+data_base[1]["structure"]+data_base[1]["meaning"]+data_base[1]["price"],
             )        
-    elif message.text == "До 2000":
+    if message.text == "До 2000":
         with open(data_base[2]["img"], 'rb') as file:
             bot.send_photo(
                 message.chat.id,
                 photo=file,
-                reply_markup=markup,
-                caption=data_base[2]["name"] + data_base[2]["structure"]+data_base[2]["meaning"]+data_base[2]["price"],
+                caption=data_base[2]["name"]+data_base[2]["structure"]+data_base[2]["meaning"]+data_base[2]["price"],
             )
-    else:
+    if message.text == "Больше" or "Не важно":
         with open(data_base[3]["img"], 'rb') as file:
             bot.send_photo(
                 message.chat.id,
                 photo=file,
-                reply_markup=markup,
-                caption=data_base[3]["name"] + data_base[3]["structure"]+data_base[3]["meaning"]+data_base[3]["price"],
+                caption=data_base[3]["name"]+data_base[3]["structure"]+data_base[3]["meaning"]+data_base[3]["price"],
             )           
     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Заказать консультацию")
@@ -116,20 +112,41 @@ def message_reply_next(message):
     )
 
 
-@bot.message_handler(content_types='text')
-def choise_price(message):
-    markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
-    item1=types.KeyboardButton("До 500")
-    item2=types.KeyboardButton("До 1000")
-    item3=types.KeyboardButton("До 2000")
-    item4=types.KeyboardButton("Больше")
-    item5=types.KeyboardButton("Не важно")
-    markup.add(item1, item2, item3, item4, item5)
-    bot.send_message(
-        message.chat.id,
-        "На какую сумму рассчитываете?"
-        ,reply_markup=markup
-    )
+@bot.callback_query_handler(func=lambda call:'Заказ')
+def making_an_order(call):
+    if call.data == "Заказать букет":
+        bot.send_message(message.chat.id,'Введите ваше имя')
+        USER_DATA['name'] = message.text
+        print(USER_DATA)
+
+@bot.message_handler(func=lambda message: message.text in [
+    "Заказать консультацию",
+    "Посмотреть всю коллекцию",
+   ]
+)
+
+def getting_consultation_or_collection(message):
+    if message.text == "Посмотреть всю коллекцию":
+        message_reply(message)
+
+
+
+
+
+
+# def choise_price(message):
+#     markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
+#     item1=types.KeyboardButton("До 500")
+#     item2=types.KeyboardButton("До 1000")
+#     item3=types.KeyboardButton("До 2000")
+#     item4=types.KeyboardButton("Больше")
+#     item5=types.KeyboardButton("Не важно")
+#     markup.add(item1, item2, item3, item4, item5)
+#     bot.send_message(
+#         message.chat.id,
+#         "На какую сумму рассчитываете?"
+#         ,reply_markup=markup
+#     )
 
 
 bot.infinity_polling()
