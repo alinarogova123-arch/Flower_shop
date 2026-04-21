@@ -111,4 +111,3 @@ def choise_price(message):
 
 
 bot.infinity_polling()
-
