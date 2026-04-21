@@ -1,6 +1,6 @@
 import json
 import telebot
-
+import random
 from telebot import types
 from environs import Env
 
@@ -114,6 +114,17 @@ def message_reply_next(message):
         reply_markup=markdown,
         parse_mode='MarkdownV2',
     )
+
+
+@bot.message_handler(func=lambda message: message.text == "Посмотреть всю коллекцию")
+def next_fowers(message):
+    flowers_number = random.randint(0, 3)
+    with open(data_base[flowers_number]["img"], 'rb') as file:
+        bot.send_photo(
+            message.chat.id,
+            photo=file,
+            caption=data_base[flowers_number]["name"] + data_base[flowers_number]["structure"]+data_base[flowers_number]["meaning"]+data_base[flowers_number]["price"],
+        )
 
 
 @bot.message_handler(content_types='text')
