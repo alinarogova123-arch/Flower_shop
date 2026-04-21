@@ -2,7 +2,6 @@ import json
 import telebot
 
 from telebot import types
-from telegram import ReplyKeyboardMarkup
 from environs import Env
 
 
@@ -74,8 +73,6 @@ def message_reply_next(message):
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
     markup.add(btn1)
-    item1 = types.KeyboardButton("До 500")
-    item2 = types.KeyboardButton("До 1000")
     with open(data_base[0]["img"], 'rb') as file:
         bot.send_photo(
             message.chat.id,
