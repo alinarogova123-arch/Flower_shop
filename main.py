@@ -5,9 +5,6 @@ from telebot import types
 from environs import Env
 
 
-
-USER_DATA = {}
-
 env = Env()
 env.read_env()
 manager_id = env.str("MANAGER_ID")
@@ -19,7 +16,7 @@ with open('data_base.json', "r", encoding="utf8") as my_file:
 
 @bot.message_handler(commands=['start'])
 def start_button_message(message):
-    markup=types.ReplyKeyboardMarkup(resize_keyboard=False)
+    markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1=types.KeyboardButton("День рождения", )
     item2=types.KeyboardButton("Свадьба")
     item3=types.KeyboardButton("В школу")
@@ -43,7 +40,7 @@ def start_button_message(message):
 )
 def message_reply(message):
     if message.text != "Другой повод":
-        markup=types.ReplyKeyboardMarkup(resize_keyboard=False)
+        markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
         item1=types.KeyboardButton("До 500")
         item2=types.KeyboardButton("До 1000")
         item3=types.KeyboardButton("До 2000")
@@ -72,35 +69,39 @@ def message_reply(message):
 )
 def message_reply_next(message):
     markup = types.InlineKeyboardMarkup()
-    btn1 = types.InlineKeyboardButton("Заказать букет", callback_data='Заказ')
+    btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
     markup.add(btn1)
     if message.text == "До 500":
         with open(data_base[0]["img"], 'rb') as file:
             bot.send_photo(
                 message.chat.id,
                 photo=file,
-                caption=data_base[0]["name"]+data_base[0]["structure"]+data_base[0]["meaning"]+data_base[0]["price"],
+                reply_markup=markup,
+                caption=data_base[0]["name"] + data_base[0]["structure"]+data_base[0]["meaning"]+data_base[0]["price"],
             )
-    if message.text == "До 1000":
+    elif message.text == "До 1000":
         with open(data_base[1]["img"], 'rb') as file:
             bot.send_photo(
                 message.chat.id,
                 photo=file,
-                caption=data_base[1]["name"]+data_base[1]["structure"]+data_base[1]["meaning"]+data_base[1]["price"],
+                reply_markup=markup,
+                caption=data_base[1]["name"] + data_base[1]["structure"]+data_base[1]["meaning"]+data_base[1]["price"],
             )        
-    if message.text == "До 2000":
+    elif message.text == "До 2000":
         with open(data_base[2]["img"], 'rb') as file:
             bot.send_photo(
                 message.chat.id,
                 photo=file,
-                caption=data_base[2]["name"]+data_base[2]["structure"]+data_base[2]["meaning"]+data_base[2]["price"],
+                reply_markup=markup,
+                caption=data_base[2]["name"] + data_base[2]["structure"]+data_base[2]["meaning"]+data_base[2]["price"],
             )
-    if message.text == "Больше" or "Не важно":
+    else:
         with open(data_base[3]["img"], 'rb') as file:
             bot.send_photo(
                 message.chat.id,
                 photo=file,
-                caption=data_base[3]["name"]+data_base[3]["structure"]+data_base[3]["meaning"]+data_base[3]["price"],
+                reply_markup=markup,
+                caption=data_base[3]["name"] + data_base[3]["structure"]+data_base[3]["meaning"]+data_base[3]["price"],
             )           
     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Заказать консультацию")
@@ -114,31 +115,8 @@ def message_reply_next(message):
     )
 
 
-
-@bot.callback_query_handler(func=lambda call:'Заказ')
-def making_an_order(call):
-    if call.data == "Заказать букет":
-        bot.send_message(message.chat.id,'Введите ваше имя')
-        USER_DATA['name'] = message.text
-        print(USER_DATA)
-
-@bot.message_handler(func=lambda message: message.text in [
-    "Заказать консультацию",
-    "Посмотреть всю коллекцию",
-   ]
-)
-
-def getting_consultation_or_collection(message):
-    if message.text == "Посмотреть всю коллекцию":
-        message_reply(message)
-
-
-
-
-
-
 @bot.message_handler(func=lambda message: message.text == "Посмотреть всю коллекцию")
-def next_flowers(message):
+def next_fowers(message):
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
     markup.add(btn1)
@@ -160,7 +138,6 @@ def next_flowers(message):
         reply_markup=markdown,
         parse_mode='MarkdownV2',
     )
-
 
 
 @bot.message_handler(func=lambda message: message.text == "Заказать консультацию")
