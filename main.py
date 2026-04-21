@@ -5,14 +5,13 @@ from telebot import types
 from environs import Env
 
 
-
 env = Env()
 env.read_env()
+manager_id = env.str("MANAGER_ID")
 tg_bot_token = env.str("POSTING_TELEGRAM_BOT_API_KEY")
 bot=telebot.TeleBot(tg_bot_token)
 with open('data_base.json', "r", encoding="utf8") as my_file:
     data_base = json.load(my_file)
-
 
 
 @bot.message_handler(commands=['start'])
@@ -118,29 +117,80 @@ def message_reply_next(message):
 
 @bot.message_handler(func=lambda message: message.text == "Посмотреть всю коллекцию")
 def next_fowers(message):
+    markup = types.InlineKeyboardMarkup()
+    btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
+    markup.add(btn1)
     flowers_number = random.randint(0, 3)
     with open(data_base[flowers_number]["img"], 'rb') as file:
         bot.send_photo(
             message.chat.id,
             photo=file,
+            reply_markup=markup,
             caption=data_base[flowers_number]["name"] + data_base[flowers_number]["structure"]+data_base[flowers_number]["meaning"]+data_base[flowers_number]["price"],
         )
-
-
-@bot.message_handler(content_types='text')
-def choise_price(message):
-    markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
-    item1=types.KeyboardButton("До 500")
-    item2=types.KeyboardButton("До 1000")
-    item3=types.KeyboardButton("До 2000")
-    item4=types.KeyboardButton("Больше")
-    item5=types.KeyboardButton("Не важно")
-    markup.add(item1, item2, item3, item4, item5)
+    markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    item1 = types.KeyboardButton("Заказать консультацию")
+    item2 = types.KeyboardButton("Посмотреть всю коллекцию")
+    markdown.add(item1, item2)
     bot.send_message(
         message.chat.id,
-        "На какую сумму рассчитываете?"
-        ,reply_markup=markup
+        "*Хотите что то еще более уникальное? Подберите другой букет из нашей коллекции или закажите консультацию флориста*",
+        reply_markup=markdown,
+        parse_mode='MarkdownV2',
     )
+
+
+@bot.message_handler(func=lambda message: message.text == "Заказать консультацию")
+def consultation(message):
+    msg = bot.send_message(
+    message.chat.id,
+    "Укажите номер телефона, и наш флорист перезвонит вам в течение 20 минут"
+    )
+    bot.register_next_step_handler(msg, get_text)
+def get_text(message):
+    byuer_phone_number = message.text
+    bot.send_message(
+        message.chat.id,
+        "Флорист скоро свяжется с вами. А пока можете присмотреть что-нибудь из готовой коллекции."
+    )
+    markup = types.InlineKeyboardMarkup()
+    btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
+    markup.add(btn1)
+    flowers_number = random.randint(0, 3)
+    with open(data_base[flowers_number]["img"], 'rb') as file:
+        bot.send_photo(
+            message.chat.id,
+            photo=file,
+            reply_markup=markup,
+            caption=data_base[flowers_number]["name"] + data_base[flowers_number]["structure"]+data_base[flowers_number]["meaning"]+data_base[flowers_number]["price"],
+        )
+    markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    item1 = types.KeyboardButton("Заказать консультацию")
+    item2 = types.KeyboardButton("Посмотреть всю коллекцию")
+    markdown.add(item1, item2)
+    bot.send_message(
+        message.chat.id,
+        "*Хотите что то еще более уникальное? Подберите другой букет из нашей коллекции или закажите консультацию флориста*",
+        reply_markup=markdown,
+        parse_mode='MarkdownV2',
+    )
+    bot.send_message(manager_id, f"Покупатель просит консультацию, номер телефона: {byuer_phone_number}")
+
+
+# @bot.message_handler(content_types='text')
+# def choise_price(message):
+#     markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
+#     item1=types.KeyboardButton("До 500")
+#     item2=types.KeyboardButton("До 1000")
+#     item3=types.KeyboardButton("До 2000")
+#     item4=types.KeyboardButton("Больше")
+#     item5=types.KeyboardButton("Не важно")
+#     markup.add(item1, item2, item3, item4, item5)
+#     bot.send_message(
+#         message.chat.id,
+#         "На какую сумму рассчитываете?"
+#         ,reply_markup=markup
+#     )
 
 
 bot.infinity_polling()
