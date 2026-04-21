@@ -64,7 +64,6 @@ def message_reply(message):
     "До 500",
     "До 1000",
     "До 2000",
-    "Без повода",
     "Больше",
     "Не важно"
     ]
@@ -73,12 +72,34 @@ def message_reply_next(message):
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
     markup.add(btn1)
-    with open(data_base[0]["img"], 'rb') as file:
-        bot.send_photo(
-            message.chat.id,
-            photo=file,
-            caption=data_base[0]["name"] + data_base[0]["structure"],
-        )
+    if message.text == "До 500":
+        with open(data_base[0]["img"], 'rb') as file:
+            bot.send_photo(
+                message.chat.id,
+                photo=file,
+                caption=data_base[0]["name"] + data_base[0]["structure"]+data_base[0]["meaning"]+data_base[0]["price"],
+            )
+    if message.text == "До 1000":
+        with open(data_base[1]["img"], 'rb') as file:
+            bot.send_photo(
+                message.chat.id,
+                photo=file,
+                caption=data_base[1]["name"] + data_base[1]["structure"]+data_base[1]["meaning"]+data_base[1]["price"],
+            )        
+    if message.text == "До 2000":
+        with open(data_base[2]["img"], 'rb') as file:
+            bot.send_photo(
+                message.chat.id,
+                photo=file,
+                caption=data_base[2]["name"] + data_base[2]["structure"]+data_base[2]["meaning"]+data_base[2]["price"],
+            )
+    if message.text == "Больше" or "Не важно":
+        with open(data_base[3]["img"], 'rb') as file:
+            bot.send_photo(
+                message.chat.id,
+                photo=file,
+                caption=data_base[3]["name"] + data_base[3]["structure"]+data_base[3]["meaning"]+data_base[3]["price"],
+            )           
     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Заказать консультацию")
     item2 = types.KeyboardButton("Посмотреть всю коллекцию")
@@ -108,3 +129,4 @@ def choise_price(message):
 
 
 bot.infinity_polling()
+
