@@ -77,27 +77,31 @@ def message_reply_next(message):
             bot.send_photo(
                 message.chat.id,
                 photo=file,
+                reply_markup=markup,
                 caption=data_base[0]["name"] + data_base[0]["structure"]+data_base[0]["meaning"]+data_base[0]["price"],
             )
-    if message.text == "До 1000":
+    elif message.text == "До 1000":
         with open(data_base[1]["img"], 'rb') as file:
             bot.send_photo(
                 message.chat.id,
                 photo=file,
+                reply_markup=markup,
                 caption=data_base[1]["name"] + data_base[1]["structure"]+data_base[1]["meaning"]+data_base[1]["price"],
             )        
-    if message.text == "До 2000":
+    elif message.text == "До 2000":
         with open(data_base[2]["img"], 'rb') as file:
             bot.send_photo(
                 message.chat.id,
                 photo=file,
+                reply_markup=markup,
                 caption=data_base[2]["name"] + data_base[2]["structure"]+data_base[2]["meaning"]+data_base[2]["price"],
             )
-    if message.text == "Больше" or "Не важно":
+    else:
         with open(data_base[3]["img"], 'rb') as file:
             bot.send_photo(
                 message.chat.id,
                 photo=file,
+                reply_markup=markup,
                 caption=data_base[3]["name"] + data_base[3]["structure"]+data_base[3]["meaning"]+data_base[3]["price"],
             )           
     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
