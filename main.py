@@ -16,7 +16,7 @@ bot=telebot.TeleBot(tg_bot_token)
 with open('data_base.json', "r", encoding="utf8") as my_file:
     data_base = json.load(my_file)
 for bouquet in data_base:
-    ALL_BOUQUETS.append(bouquet['name'])
+    ALL_BOUQUETS_NAME.append(bouquet['name'])
 
 
 @bot.message_handler(func=lambda message: message.text == '/start' or message.text == 'Отказаться')
