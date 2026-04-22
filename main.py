@@ -121,8 +121,8 @@ def get_promo(message, user_data):
     user_data["promo"] = message.text    
     with open('users_data.json', 'r+', encoding="utf-8") as file:         
         orders = json.load(file)
-        order_namber = len(orders)+1
-        user_data['order_namber'] = order_namber
+        order_number = len(orders)+1
+        user_data['order_namber'] = order_number
         orders[user_data["number"]] = user_data
         update_file = json.dumps(orders, ensure_ascii=False)
         with open('users_data.json','w+', encoding="utf-8") as file:
