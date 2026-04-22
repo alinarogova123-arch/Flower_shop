@@ -29,8 +29,8 @@ def request_for_consent(message):
     markup.add(item1, item2)
     bot.send_message(
         message.chat.id,
-        "Подтведите согласие на обработку персональных данных"
-        ,reply_markup=markup
+        "Подтведите согласие на обработку персональных данных",
+        reply_markup=markup
     )
 
 
@@ -184,7 +184,10 @@ def get_catalog(message):
     ]
 )
 def message_reply_next(message):
+<<<<<<< Updated upstream
     BOUQUETS_FOR_ORDER.clear()
+=======
+>>>>>>> Stashed changes
     for bouquet_name in BOUQUETS_FOR_OCCASION_NAME:
         for bouquet in data_base:
             if bouquet_name == bouquet["name"]:
@@ -193,6 +196,10 @@ def message_reply_next(message):
                 elif message.text == "Не важно":
                     for bouquet in data_base:
                         BOUQUETS_FOR_ORDER.append(bouquet["name"])
+<<<<<<< Updated upstream
+=======
+    print(BOUQUETS_FOR_ORDER)
+>>>>>>> Stashed changes
     if len(BOUQUETS_FOR_ORDER) == 1:
         markup = types.InlineKeyboardMarkup()
         btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data=BOUQUETS_FOR_ORDER[0])
@@ -217,7 +224,11 @@ def message_reply_next(message):
     else:
         markup = types.InlineKeyboardMarkup()
         btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data=BOUQUETS_FOR_ORDER[0])
+<<<<<<< Updated upstream
         btn2 = types.InlineKeyboardButton(text="Следующий букет", callback_data="Следующий букет")
+=======
+        btn2 = types.InlineKeyboardButton(text="Следующий букет", callback_data="q")
+>>>>>>> Stashed changes
         markup.add(btn1, btn2)
         for bouquet in data_base:
             if BOUQUETS_FOR_ORDER[0] == bouquet["name"]:
@@ -230,6 +241,7 @@ def message_reply_next(message):
                         )
 
 
+<<<<<<< Updated upstream
 @bot.callback_query_handler(func=lambda call: call.data == "Следующий букет")
 def next_card(call):
     del BOUQUETS_FOR_ORDER[0]
@@ -268,6 +280,13 @@ def next_card(call):
                         reply_markup=markup,
                         caption=f'{bouquet["name"]}\n{bouquet["structure"]}\n{bouquet["meaning"]}\nЦена:{bouquet["price"]}\n',
                         )
+=======
+@bot.callback_query_handler(func=lambda call: call.message == "Следующий букет")
+def next_card(call):
+    bouquet_number = 1
+
+
+>>>>>>> Stashed changes
 
 
 @bot.message_handler(func=lambda message: message.text == "Мне нужна консультация")
