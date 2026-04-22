@@ -114,28 +114,24 @@ def message_reply_next(message):
     markup.add(btn1)
     for bouqet_name in BOUQUETS:
         for bouqet in data_base:
-            if message.text == bouqet["price_up_to"]:
-                with open(bouqet["img"], 'rb') as file:
-                    bot.send_photo(
-                     message.chat.id,
-                        photo=file,
-                        reply_markup=markup,
-                        caption=bouqet["name"] + bouqet["structure"]+bouqet["meaning"]+bouqet["price"],
-                        )
-            elif message.text == "Не важно":
-                for bouqet in data_base:
+            if bouqet_name == bouqet["name"]:
+                if message.text == bouqet["price_up_to"]:
                     with open(bouqet["img"], 'rb') as file:
                         bot.send_photo(
                             message.chat.id,
                             photo=file,
                             reply_markup=markup,
                             caption=bouqet["name"] + bouqet["structure"]+bouqet["meaning"]+bouqet["price"],
-                            )   
-
-
-
-
-          
+                            )
+                elif message.text == "Не важно":
+                    for bouqet in data_base:
+                        with open(bouqet["img"], 'rb') as file:
+                            bot.send_photo(
+                                message.chat.id,
+                                photo=file,
+                                reply_markup=markup,
+                                caption=bouqet["name"] + bouqet["structure"]+bouqet["meaning"]+bouqet["price"],
+                                )             
     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Мне нужна консультация")
     item2 = types.KeyboardButton("Посмотреть весь каталог")
