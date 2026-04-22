@@ -55,14 +55,18 @@ def get_all_catalog(message):
             reply_markup=markup
             )
 
-@bot.message_handler(func=lambda message: True)
+@bot.message_handler(func=lambda message: message.text in [
+    "ЯРКИЙ СОН",
+    "ПОД ДОЖДЕМ",
+    "ПЕСТРЫЙ",
+    "РОКОВАЯ ЛЮБОВЬ",
+    "ГОРНЫЙ ВОЗДУХ"])
 def get_card_bouquet(message):
     markup = types.InlineKeyboardMarkup()
-    btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
+    btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data=message.text)
     markup.add(btn1)
     for bouquet in data_base:
         if message.text == bouquet["name"]:
-
             with open(bouquet["img"], 'rb') as file:
                 bot.send_photo(
                     message.chat.id,
@@ -80,7 +84,6 @@ def get_card_bouquet(message):
         reply_markup=markdown,
         parse_mode='MarkdownV2',
     )
-
 
 
 @bot.message_handler(func=lambda message: message.text == "Подобрать букет")
