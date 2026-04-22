@@ -170,8 +170,8 @@ def get_catalog(message):
     markup.add(item1, item2, item3, item4, item5)
     bot.send_message(
         message.chat.id,
-        "На какую сумму рассчитываете?"
-        ,reply_markup=markup
+        "На какую сумму рассчитываете?",
+        reply_markup=markup
     )                              
 
 
