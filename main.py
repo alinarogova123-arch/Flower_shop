@@ -5,7 +5,8 @@ from telebot import types
 from environs import Env
 
 ALL_BOUQUETS_NAME = []
-BOUQUETS_TO_ORDER_NAME = []
+BOUQUETS_FOR_OCCASION_NAME = []
+BOUQUETS_FOR_ORDER = []
 
 
 env = Env()
@@ -148,7 +149,7 @@ def get_catalog(message):
     for bouquet in data_base:
         for occasion in bouquet['occasion']:
             if message.text == occasion:                
-                BOUQUETS_TO_ORDER_NAME.append(bouquet['name'])
+                BOUQUETS_FOR_OCCASION_NAME.append(bouquet['name'])
 
     markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1=types.KeyboardButton("До 500")
@@ -176,26 +177,14 @@ def message_reply_next(message):
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
     markup.add(btn1)
-    for bouquet_name in BOUQUETS_TO_ORDER_NAME:
+    for bouquet_name in BOUQUETS_FOR_OCCASION_NAME:
         for bouquet in data_base:
             if bouquet_name == bouquet["name"]:
                 if message.text == bouquet["price_up_to"]:
-                    with open(bouquet["img"], 'rb') as file:
-                        bot.send_photo(
-                            message.chat.id,
-                            photo=file,
-                            reply_markup=markup,
-                            caption=f'{bouquet["name"]}\n{bouquet["structure"]}\n{bouquet["meaning"]}\nЦена:{bouquet["price"]}\n',
-                            )
+                    BOUQUETS_FOR_ORDER.append(bouquet["name"])
                 elif message.text == "Не важно":
                     for bouquet in data_base:
-                        with open(bouquet["img"], 'rb') as file:
-                            bot.send_photo(
-                                message.chat.id,
-                                photo=file,
-                                reply_markup=markup,
-                                caption=f'{bouquet["name"]}\n{bouquet["structure"]}\n{bouquet["meaning"]}\nЦена:{bouquet["price"]}\n',
-                                )             
+                        BOUQUETS_FOR_ORDER.append(bouquet["name"])
     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Мне нужна консультация")
     item2 = types.KeyboardButton("Посмотреть весь каталог")
