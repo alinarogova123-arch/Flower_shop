@@ -5,6 +5,9 @@ from telebot import types
 from environs import Env
 
 
+BOUQUETS = []
+
+
 env = Env()
 env.read_env()
 manager_id = env.str("MANAGER_ID")
@@ -81,40 +84,7 @@ def get_catalog(message):
     for bouquet in data_base:
         for occasion in bouquet['occasion']:
             if message.text == occasion:                
-                item=types.KeyboardButton(bouquet['name'])
-                markup.add(item)
-                bot.send_message(
-                    message.chat.id,
-                    bouquet['name']+bouquet['price'],
-                    reply_markup=markup
-                    )
-
-
-@bot.message_handler(func=lambda message:True)               
-def get_bouquet_card(message):
-    markup = types.InlineKeyboardMarkup()
-    btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='Заказ')
-    markup.add(btn1)
-    for bouquet in data_base:
-        if message.text == bouquet['name']:
-            bot.send_photo(
-                message.chat.id,
-                photo=bouquet['img'],
-                caption=bouquet["name"]+bouquet["structure"]+bouquet["meaning"]+bouquet["price"],
-                reply_markup=markup,                
-                )   
-    markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    item1 = types.KeyboardButton("Мне нужна консультация")
-    item2 = types.KeyboardButton("Посмотреть весь каталог")
-    markdown.add(item1, item2)
-    bot.send_message(
-        message.chat.id,
-        "*Хотите что то еще более уникальное? Подберите другой букет из нашей коллекции или закажите консультацию флориста*",
-        reply_markup=markdown,
-        parse_mode='MarkdownV2',
-    )
-
-def message_reply(message):
+                BOUQUETS.append(bouquet['name'])
     markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1=types.KeyboardButton("До 500")
     item2=types.KeyboardButton("До 1000")
@@ -127,6 +97,7 @@ def message_reply(message):
         "На какую сумму рассчитываете?"
         ,reply_markup=markup
     )
+                              
 
 
 @bot.message_handler(func=lambda message: message.text in [
@@ -141,38 +112,30 @@ def message_reply_next(message):
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
     markup.add(btn1)
-    if message.text == "До 500":
-        with open(data_base[0]["img"], 'rb') as file:
-            bot.send_photo(
-                message.chat.id,
-                photo=file,
-                reply_markup=markup,
-                caption=data_base[0]["name"] + data_base[0]["structure"]+data_base[0]["meaning"]+data_base[0]["price"],
-            )
-    elif message.text == "До 1000":
-        with open(data_base[1]["img"], 'rb') as file:
-            bot.send_photo(
-                message.chat.id,
-                photo=file,
-                reply_markup=markup,
-                caption=data_base[1]["name"] + data_base[1]["structure"]+data_base[1]["meaning"]+data_base[1]["price"],
-            )        
-    elif message.text == "До 2000":
-        with open(data_base[2]["img"], 'rb') as file:
-            bot.send_photo(
-                message.chat.id,
-                photo=file,
-                reply_markup=markup,
-                caption=data_base[2]["name"] + data_base[2]["structure"]+data_base[2]["meaning"]+data_base[2]["price"],
-            )
-    elif message.text == "Больше" or "Не важно":
-        with open(data_base[3]["img"], 'rb') as file:
-            bot.send_photo(
-                message.chat.id,
-                photo=file,
-                reply_markup=markup,
-                caption=data_base[3]["name"] + data_base[3]["structure"]+data_base[3]["meaning"]+data_base[3]["price"],
-            )           
+    for bouqet_name in BOUQUETS:
+        for bouqet in data_base:
+            if message.text == bouqet["price_up_to"]:
+                with open(bouqet["img"], 'rb') as file:
+                    bot.send_photo(
+                     message.chat.id,
+                        photo=file,
+                        reply_markup=markup,
+                        caption=bouqet["name"] + bouqet["structure"]+bouqet["meaning"]+bouqet["price"],
+                        )
+            elif message.text == "Не важно":
+                for bouqet in data_base:
+                    with open(bouqet["img"], 'rb') as file:
+                        bot.send_photo(
+                            message.chat.id,
+                            photo=file,
+                            reply_markup=markup,
+                            caption=bouqet["name"] + bouqet["structure"]+bouqet["meaning"]+bouqet["price"],
+                            )   
+
+
+
+
+          
     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Мне нужна консультация")
     item2 = types.KeyboardButton("Посмотреть весь каталог")
