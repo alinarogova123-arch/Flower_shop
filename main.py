@@ -154,6 +154,7 @@ def bouquet_selection(message):
 )
 
 def get_catalog(message):
+    BOUQUETS_FOR_OCCASION_NAME.clear()
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     for bouquet in data_base:
         for occasion in bouquet['occasion']:
@@ -174,11 +175,6 @@ def get_catalog(message):
     )                              
 
 
-@bot.callback_query_handler(func=lambda call: call.message == "Следующий букет")
-def next_card(call):
-    bouquet_number = 1
-
-
 @bot.message_handler(func=lambda message: message.text in [
     "До 500",
     "До 1000",
@@ -197,7 +193,6 @@ def message_reply_next(message):
                 elif message.text == "Не важно":
                     for bouquet in data_base:
                         BOUQUETS_FOR_ORDER.append(bouquet["name"])
-    print(BOUQUETS_FOR_ORDER)
     if len(BOUQUETS_FOR_ORDER) == 1:
         markup = types.InlineKeyboardMarkup()
         btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data=BOUQUETS_FOR_ORDER[0])
