@@ -7,7 +7,7 @@ from environs import Env
 ALL_BOUQUETS_NAME = []
 BOUQUETS_FOR_OCCASION_NAME = []
 BOUQUETS_FOR_ORDER = []
-USER_DATA = []
+
 
 
 env = Env()
@@ -119,10 +119,10 @@ def get_time(message, user_data):
 
 def get_promo(message, user_data):
     user_data["promo"] = message.text
-    USER_DATA.append(user_data)
+    
     with open('users_data.json', 'r+') as file:
         orders = json.load(file)
-        orders[0] = USER_DATA
+        orders[user_data["number"]] = user_data
         json.dump(orders, open('users_data.json','w+'))
     bot.send_message(message.chat.id, f"Новый заказ: {user_data}")
 
