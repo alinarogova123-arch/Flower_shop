@@ -214,11 +214,19 @@ def message_reply_next(message):
 def consultation(message):
     msg = bot.send_message(
     message.chat.id,
-    "Укажите ваше имя и номер телефона, и наш флорист перезвонит вам в течение 20 минут"
+    "Укажите ваш номер телефона, и наш флорист перезвонит вам в течение 20 минут"
     )
-    bot.register_next_step_handler(msg, get_text)
-def get_text(message):
-    byuer_phone_number = message.text
+    bot.register_next_step_handler(msg, get_phone_number)
+
+def get_phone_number(message):
+    msg = bot.send_message(
+    message.chat.id,
+    "Укажите ваше имя, и наш флорист перезвонит вам в течение 20 минут"
+    )
+    bot.register_next_step_handler(msg, get_user_name, byuer_phone_number = message.text)
+
+def get_user_name(message, byuer_phone_number):
+    byuer_user_name = message.text
     bot.send_message(
         message.chat.id,
         "Флорист скоро свяжется с вами. А пока можете присмотреть что-нибудь из готовой коллекции."
@@ -244,7 +252,7 @@ def get_text(message):
         reply_markup=markdown,
         parse_mode='MarkdownV2',
     )
-    bot.send_message(manager_id, f"Покупатель просит консультацию, номер телефона: {byuer_phone_number}")
+    bot.send_message(manager_id, f"Имя: {byuer_user_name} Номер телефона: {byuer_phone_number}")
 
 # @bot.callback_query_handler(func=lambda call:'Заказ')
 # def making_an_order(call):
