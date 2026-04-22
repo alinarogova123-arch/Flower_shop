@@ -114,7 +114,7 @@ def message_reply_next(message):
                 reply_markup=markup,
                 caption=data_base[2]["name"] + data_base[2]["structure"]+data_base[2]["meaning"]+data_base[2]["price"],
             )
-    else:
+    elif message.text == "Больше" or "Не важно"::
         with open(data_base[3]["img"], 'rb') as file:
             bot.send_photo(
                 message.chat.id,
@@ -194,6 +194,15 @@ def get_text(message):
         parse_mode='MarkdownV2',
     )
     bot.send_message(manager_id, f"Покупатель просит консультацию, номер телефона: {byuer_phone_number}")
+
+# @bot.callback_query_handler(func=lambda call:'Заказ')
+# def making_an_order(call):
+#     if call.data == "Заказать букет":
+#         bot.send_message(message.chat.id,'Введите ваше имя')
+#         USER_DATA['name'] = message.text
+#         print(USER_DATA)
+
+
 
 
 # @bot.message_handler(content_types='text')
