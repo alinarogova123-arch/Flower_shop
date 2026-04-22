@@ -83,6 +83,43 @@ def get_card_bouquet(message):
     )
 
 
+@bot.callback_query_handler(func=lambda call: call.data in ALL_BOUQUETS_NAME)
+def order(call):
+    user_data = {}
+    user_data["bouquet"] = call.data
+    msg = bot.send_message(call.message.chat.id, "Укажите ваши ФИО")
+    bot.register_next_step_handler(msg, get_buyer_name, user_data=user_data)
+
+def get_buyer_name(message, user_data):
+    user_data["name"] = message.text
+    msg = bot.send_message(message.chat.id, "Укажите ваш номер телефона")
+    bot.register_next_step_handler(msg, get_buyer_number, user_data=user_data)
+
+def get_buyer_number(message, user_data):
+    user_data["number"] = message.text
+    msg = bot.send_message(message.chat.id, "Укажите адрес доставки")
+    bot.register_next_step_handler(msg, get_adress, user_data=user_data)
+
+def get_adress(message, user_data):
+    user_data["adress"] = message.text
+    msg = bot.send_message(message.chat.id, "Укажите дату доставки")
+    bot.register_next_step_handler(msg, get_date, user_data=user_data)
+
+def get_date(message, user_data):
+    user_data["date"] = message.text
+    msg = bot.send_message(message.chat.id, "Укажите время доставки")
+    bot.register_next_step_handler(msg, get_time, user_data=user_data)
+
+def get_time(message, user_data):
+    user_data["time"] = message.text
+    msg = bot.send_message(message.chat.id, "Укажите промокод доставки")
+    bot.register_next_step_handler(msg, get_promo, user_data=user_data)
+
+def get_promo(message, user_data):
+    user_data["promo"] = message.text
+    bot.send_message(manager_id, f"Новый заказ: {user_data}")
+
+
 @bot.message_handler(func=lambda message: message.text == "Подобрать букет")
 def bouquet_selection(message):
     markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
