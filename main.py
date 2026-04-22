@@ -51,25 +51,24 @@ def get_all_catalog(message):
         markup.add(item)
         bot.send_message(
             message.chat.id,
-            bouquet['name']+bouquet['price'],
+            f'{bouquet['name']}\nЦена:{bouquet['price']}',
             reply_markup=markup
             )
 
 @bot.message_handler(func=lambda message: True)
 def get_card_bouquet(message):
-    print(message.text)
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
     markup.add(btn1)
     for bouquet in data_base:
-        if f'{message.text}\n' == bouquet["name"]:
+        if message.text == bouquet["name"]:
 
             with open(bouquet["img"], 'rb') as file:
                 bot.send_photo(
                     message.chat.id,
                     photo=file,
                     reply_markup=markup,
-                    caption=bouquet["name"] + bouquet["structure"]+bouquet["meaning"]+bouquet["price"],
+                    caption=f'{bouquet["name"]}\n{bouquet["structure"]}\n{bouquet["meaning"]}\nЦена:{bouquet["price"]}\n',
                     )      
     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Мне нужна консультация")
@@ -81,9 +80,6 @@ def get_card_bouquet(message):
         reply_markup=markdown,
         parse_mode='MarkdownV2',
     )
-
-
-
 
 
 
@@ -116,6 +112,7 @@ def get_catalog(message):
         for occasion in bouquet['occasion']:
             if message.text == occasion:                
                 BOUQUETS.append(bouquet['name'])
+
     markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1=types.KeyboardButton("До 500")
     item2=types.KeyboardButton("До 1000")
@@ -152,7 +149,7 @@ def message_reply_next(message):
                             message.chat.id,
                             photo=file,
                             reply_markup=markup,
-                            caption=bouquet["name"] + bouquet["structure"]+bouquet["meaning"]+bouquet["price"],
+                            caption=f'{bouquet["name"]}\n{bouquet["structure"]}\n{bouquet["meaning"]}\nЦена:{bouquet["price"]}\n',
                             )
                 elif message.text == "Не важно":
                     for bouquet in data_base:
@@ -161,7 +158,7 @@ def message_reply_next(message):
                                 message.chat.id,
                                 photo=file,
                                 reply_markup=markup,
-                                caption=bouquet["name"] + bouquet["structure"]+bouquet["meaning"]+bouquet["price"],
+                                caption=f'{bouquet["name"]}\n{bouquet["structure"]}\n{bouquet["meaning"]}\nЦена:{bouquet["price"]}\n',
                                 )             
     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Мне нужна консультация")
