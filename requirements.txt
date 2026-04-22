@@ -1,2 +1,2 @@
-environs==15.0.1
-pyTelegramBotAPI==4.33.0
+aiogram==3.27.0
+python-dotenv==1.2.2
