@@ -57,12 +57,7 @@ def get_all_catalog(message):
             reply_markup=markup
             )
 
-@bot.message_handler(func=lambda message: message.text in [
-    "ЯРКИЙ СОН",
-    "ПОД ДОЖДЕМ",
-    "ПЕСТРЫЙ",
-    "РОКОВАЯ ЛЮБОВЬ",
-    "ГОРНЫЙ ВОЗДУХ"])
+@bot.message_handler(func=lambda message: message.text in ALL_BOUQUETS_NAME)
 def get_card_bouquet(message):
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data=message.text)
@@ -116,7 +111,7 @@ def get_catalog(message):
     for bouquet in data_base:
         for occasion in bouquet['occasion']:
             if message.text == occasion:                
-                BOUQUETS.append(bouquet['name'])
+                BOUQUETS_TO_ORDER_NAME.append(bouquet['name'])
 
     markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1=types.KeyboardButton("До 500")
@@ -144,7 +139,7 @@ def message_reply_next(message):
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
     markup.add(btn1)
-    for bouquet_name in BOUQUETS:
+    for bouquet_name in BOUQUETS_TO_ORDER_NAME:
         for bouquet in data_base:
             if bouquet_name == bouquet["name"]:
                 if message.text == bouquet["price_up_to"]:
