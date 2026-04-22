@@ -97,9 +97,10 @@ def get_bouquet_card(message):
     markup.add(btn1)
     for bouquet in data_base:
         if message.text == bouquet['name']:
-            bot.send_message(
+            bot.send_photo(
                 message.chat.id,
-                bouquet["name"]+bouquet["structure"]+bouquet["meaning"]+bouquet["price"],
+                photo=bouquet['img'],
+                caption=bouquet["name"]+bouquet["structure"]+bouquet["meaning"]+bouquet["price"],
                 reply_markup=markup,                
                 )   
     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
