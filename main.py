@@ -55,6 +55,37 @@ def get_all_catalog(message):
             reply_markup=markup
             )
 
+@bot.message_handler(func=lambda message: True)
+def get_card_bouquet(message):
+    print(message.text)
+    markup = types.InlineKeyboardMarkup()
+    btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
+    markup.add(btn1)
+    for bouquet in data_base:
+        if f'{message.text}\n' == bouquet["name"]:
+
+            with open(bouquet["img"], 'rb') as file:
+                bot.send_photo(
+                    message.chat.id,
+                    photo=file,
+                    reply_markup=markup,
+                    caption=bouquet["name"] + bouquet["structure"]+bouquet["meaning"]+bouquet["price"],
+                    )      
+    markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    item1 = types.KeyboardButton("Мне нужна консультация")
+    item2 = types.KeyboardButton("Посмотреть весь каталог")
+    markdown.add(item1, item2)
+    bot.send_message(
+        message.chat.id,
+        "*Хотите что то еще более уникальное? Подберите другой букет из нашей коллекции или закажите консультацию флориста*",
+        reply_markup=markdown,
+        parse_mode='MarkdownV2',
+    )
+
+
+
+
+
 
 @bot.message_handler(func=lambda message: message.text == "Подобрать букет")
 def bouquet_selection(message):
@@ -112,25 +143,25 @@ def message_reply_next(message):
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
     markup.add(btn1)
-    for bouqet_name in BOUQUETS:
-        for bouqet in data_base:
-            if bouqet_name == bouqet["name"]:
-                if message.text == bouqet["price_up_to"]:
-                    with open(bouqet["img"], 'rb') as file:
+    for bouquet_name in BOUQUETS:
+        for bouquet in data_base:
+            if bouquet_name == bouquet["name"]:
+                if message.text == bouquet["price_up_to"]:
+                    with open(bouquet["img"], 'rb') as file:
                         bot.send_photo(
                             message.chat.id,
                             photo=file,
                             reply_markup=markup,
-                            caption=bouqet["name"] + bouqet["structure"]+bouqet["meaning"]+bouqet["price"],
+                            caption=bouquet["name"] + bouquet["structure"]+bouquet["meaning"]+bouquet["price"],
                             )
                 elif message.text == "Не важно":
-                    for bouqet in data_base:
-                        with open(bouqet["img"], 'rb') as file:
+                    for bouquet in data_base:
+                        with open(bouquet["img"], 'rb') as file:
                             bot.send_photo(
                                 message.chat.id,
                                 photo=file,
                                 reply_markup=markup,
-                                caption=bouqet["name"] + bouqet["structure"]+bouqet["meaning"]+bouqet["price"],
+                                caption=bouquet["name"] + bouquet["structure"]+bouquet["meaning"]+bouquet["price"],
                                 )             
     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Мне нужна консультация")
@@ -144,29 +175,6 @@ def message_reply_next(message):
     )
 
 
-# @bot.message_handler(func=lambda message: message.text == "Посмотреть всю коллекцию")
-# def next_fowers(message):
-#     markup = types.InlineKeyboardMarkup()
-#     btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data='qwerty')
-#     markup.add(btn1)
-#     flowers_number = random.randint(0, 3)
-#     with open(data_base[flowers_number]["img"], 'rb') as file:
-#         bot.send_photo(
-#             message.chat.id,
-#             photo=file,
-#             reply_markup=markup,
-#             caption=data_base[flowers_number]["name"] + data_base[flowers_number]["structure"]+data_base[flowers_number]["meaning"]+data_base[flowers_number]["price"],
-#         )
-#     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
-#     item1 = types.KeyboardButton("Мне нужна консультация")
-#     item2 = types.KeyboardButton("Посмотреть весь каталог")
-#     markdown.add(item1, item2)
-#     bot.send_message(
-#         message.chat.id,
-#         "*Хотите что то еще более уникальное? Подберите другой букет из нашей коллекции или закажите консультацию флориста*",
-#         reply_markup=markdown,
-#         parse_mode='MarkdownV2',
-#     )
 
 
 @bot.message_handler(func=lambda message: message.text == "Мне нужна консультация")
@@ -213,12 +221,7 @@ def get_user_name(message, byuer_phone_number):
     )
     bot.send_message(manager_id, f"Имя: {byuer_user_name} Номер телефона: {byuer_phone_number}")
 
-# @bot.callback_query_handler(func=lambda call:'Заказ')
-# def making_an_order(call):
-#     if call.data == "Заказать букет":
-#         bot.send_message(message.chat.id,'Введите ваше имя')
-#         USER_DATA['name'] = message.text
-#         print(USER_DATA)
+
 
 
 
