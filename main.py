@@ -112,7 +112,7 @@ def get_date(message, user_data):
 
 def get_time(message, user_data):
     user_data["time"] = message.text
-    msg = bot.send_message(message.chat.id, "Укажите промокод доставки")
+    msg = bot.send_message(message.chat.id, "Укажите промокод")
     bot.register_next_step_handler(msg, get_promo, user_data=user_data)
 
 def get_promo(message, user_data):
