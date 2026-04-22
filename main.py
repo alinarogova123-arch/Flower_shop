@@ -117,7 +117,7 @@ def get_time(message, user_data):
 
 def get_promo(message, user_data):
     user_data["promo"] = message.text
-    bot.send_message(manager_id, f"Новый заказ: {user_data}")
+    bot.send_message(message.chat.id, f"Новый заказ: {user_data}")
 
 
 @bot.message_handler(func=lambda message: message.text == "Подобрать букет")
@@ -250,7 +250,7 @@ def get_user_name(message, byuer_phone_number):
         reply_markup=markdown,
         parse_mode='MarkdownV2',
     )
-    bot.send_message(manager_id, f"Имя: {byuer_user_name} Номер телефона: {byuer_phone_number}")
+    bot.send_message(message.chat.id, f"Имя: {byuer_user_name} Номер телефона: {byuer_phone_number}")
 
 
 
