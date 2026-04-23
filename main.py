@@ -156,7 +156,6 @@ def get_promo(message, user_data):
         message.chat.id,
         f"Новый заказ: {user_data}\nСкидка: {discount}%\nИтог: {final_price}р"
     )
-
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text="Перейти к оплате", callback_data=str(final_price))
     markup.add(btn1)
@@ -341,7 +340,7 @@ def get_user_name(message, byuer_phone_number):
         )
     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Подобрать букет")
-    item2 = types.KeyboardButton("Посмотреть весь каталог")
+    item2 = types.KeyboardButton("Посмотреть всю коллекцию")
     markdown.add(item1, item2)
     bot.send_message(
         message.chat.id,
@@ -355,6 +354,7 @@ def get_user_name(message, byuer_phone_number):
 
 @bot.callback_query_handler(func=lambda call: True)
 def send_invoice(call):
+    amount = int(call.data) * 100
     bot.send_invoice(
         call.message.chat.id,
         title='Цветы',
@@ -362,7 +362,7 @@ def send_invoice(call):
         invoice_payload='month_subscription_1',
         provider_token=payment_token,
         currency='RUB',
-        prices=[types.LabeledPrice(label='Тестовый товар', amount=(int(call.data) * 100))],
+        prices=[types.LabeledPrice(label='Тестовый товар', amount=amount)],
         start_parameter='test-payment',)
 
 
