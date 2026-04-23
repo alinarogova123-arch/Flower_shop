@@ -14,6 +14,7 @@ env = Env()
 env.read_env()
 manager_id = env.str("MANAGER_ID")
 tg_bot_token = env.str("POSTING_TELEGRAM_BOT_API_KEY")
+payment_token = env.str("TOKEN_PAYMENT")
 bot=telebot.TeleBot(tg_bot_token)
 
 with open('data_base.json', "r", encoding="utf8") as my_file:
