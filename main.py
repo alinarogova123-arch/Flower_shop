@@ -236,14 +236,10 @@ def get_catalog(message):
 )
 def message_reply_next(message):
     BOUQUETS_FOR_ORDER.clear()
-    for bouquet_name in BOUQUETS_FOR_OCCASION_NAME:
-        for bouquet in data_base:
-            if bouquet_name == bouquet["name"]:
-                if message.text == bouquet["price_up_to"]:
-                    BOUQUETS_FOR_ORDER.append(bouquet["name"])
-                elif message.text == "Не важно":
-                    for bouquet in data_base:
-                        BOUQUETS_FOR_ORDER.append(bouquet["name"])
+    for bouquet in data_base:
+        if bouquet["name"] in BOUQUETS_FOR_OCCASION_NAME:
+            if message.text == "Не важно" or message.text == bouquet["price_up_to"]:
+                BOUQUETS_FOR_ORDER.append(bouquet["name"])
     if len(BOUQUETS_FOR_ORDER) == 1:
         markup = types.InlineKeyboardMarkup()
         btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data=BOUQUETS_FOR_ORDER[0])
