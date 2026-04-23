@@ -32,11 +32,11 @@ def request_for_consent(message):
     item1=types.KeyboardButton("Подтвердить")
     item2=types.KeyboardButton("Отказаться")
     markup.add(item1, item2)
-    with open('Consent.pdf', 'rb') as file:
+    with open('Согласие на обработку персональных данных.pdf', 'rb') as file:
         bot.send_document(message.chat.id, file)
     bot.send_message(
         message.chat.id,
-        "Подтведите согласие на обработку персональных данных"
+        "Прочитайте и подтведите согласие на обработку персональных данных"
         ,reply_markup=markup
     )
 
