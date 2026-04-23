@@ -157,6 +157,15 @@ def get_promo(message, user_data):
         f"Новый заказ: {user_data}\nСкидка: {discount}%\nИтог: {final_price}р"
     )
 
+    markup = types.InlineKeyboardMarkup()
+    btn1 = types.InlineKeyboardButton(text="Перейти к оплате", callback_data=str(final_price))
+    markup.add(btn1)
+    bot.send_message(
+        message.chat.id,
+        "Готовы перейти к оплате?",
+        reply_markup=markup
+    )
+
 
 @bot.message_handler(func=lambda message: message.text == "Подобрать букет")
 def bouquet_selection(message):
@@ -343,5 +352,35 @@ def get_user_name(message, byuer_phone_number):
     # Отправка контактных данных флористу, для теста подставлен message.chat.id
     bot.send_message(message.chat.id, f"Имя: {byuer_user_name} Номер телефона: {byuer_phone_number}")
 
+
+@bot.callback_query_handler(func=lambda call: True)
+def send_invoice(call):
+    bot.send_invoice(
+        call.message.chat.id,
+        title='Цветы',
+        description='Описание цветов',
+        invoice_payload='month_subscription_1',
+        provider_token=payment_token,
+        currency='RUB',
+        prices=[types.LabeledPrice(label='Тестовый товар', amount=(int(call.data) * 100))],
+        start_parameter='test-payment',)
+
+
+@bot.pre_checkout_query_handler(func=lambda query: True)
+def pre_checkout(pre_checkout_q: types.PreCheckoutQuery):
+    bot.answer_pre_checkout_query(
+        pre_checkout_q.id,
+        ok=True,
+        error_message="Произошла ошибка при обработке платежа."
+    )
+
+
+@bot.message_handler(content_types=['successful_payment'])
+def success_payment(message):
+    payment_info = message.successful_payment
+    bot.send_message(
+        message.chat.id,
+        f'Ура! Оплата {payment_info.total_amount // 100} {payment_info.currency} прошла успешно!'
+    )
 
 bot.infinity_polling()
