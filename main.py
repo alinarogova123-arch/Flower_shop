@@ -181,6 +181,7 @@ def bouquet_selection(message):
 )
 
 def get_catalog(message):
+    BOUQUETS_FOR_OCCASION_NAME.clear()
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     for bouquet in data_base:
         for occasion in bouquet['occasion']:
