@@ -18,6 +18,15 @@ tg_bot_token = env.str("POSTING_TELEGRAM_BOT_API_KEY")
 payment_token = env.str("TOKEN_PAYMENT")
 bot=telebot.TeleBot(tg_bot_token)
 
+
+def handle_restart(message):
+    if message.text == "/start":
+        bot.clear_step_handler_by_chat_id(message.chat.id)
+        request_for_consent(message)
+        return True
+    return False
+
+
 with open('data_base.json', "r", encoding="utf8") as my_file:
     data_base = json.load(my_file)
 
@@ -103,32 +112,37 @@ def order(call):
     bot.register_next_step_handler(msg, get_buyer_name, user_data=user_data)
 
 def get_buyer_name(message, user_data):
+    if handle_restart(message): return
     user_data["name"] = message.text
     msg = bot.send_message(message.chat.id, "Укажите ваш номер телефона")
     bot.register_next_step_handler(msg, get_buyer_number, user_data=user_data)
 
 def get_buyer_number(message, user_data):
+    if handle_restart(message): return
     user_data["number"] = message.text
     msg = bot.send_message(message.chat.id, "Укажите адрес доставки")
     bot.register_next_step_handler(msg, get_adress, user_data=user_data)
 
 def get_adress(message, user_data):
+    if handle_restart(message): return
     user_data["adress"] = message.text
     msg = bot.send_message(message.chat.id, "Укажите дату доставки")
     bot.register_next_step_handler(msg, get_date, user_data=user_data)
 
 def get_date(message, user_data):
+    if handle_restart(message): return
     user_data["date"] = message.text
     msg = bot.send_message(message.chat.id, "Укажите время доставки")
     bot.register_next_step_handler(msg, get_time, user_data=user_data)
 
 def get_time(message, user_data):
+    if handle_restart(message): return
     user_data["time"] = message.text
     msg = bot.send_message(message.chat.id, "Укажите промокод")
     bot.register_next_step_handler(msg, get_promo, user_data=user_data)
 
 def get_promo(message, user_data):
-
+    if handle_restart(message): return
     user_data["promo"] = message.text    
 
     discount = promo_codes.get(message.text, 0)
