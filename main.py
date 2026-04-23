@@ -7,7 +7,7 @@ from environs import Env
 ALL_BOUQUETS_NAME = []
 BOUQUETS_FOR_OCCASION_NAME = []
 BOUQUETS_FOR_ORDER = []
-
+ALL_BOUQUETS_NAME_AND_PRICE = []
 
 
 env = Env()
@@ -49,26 +49,28 @@ def start_menu(message):
 
 @bot.message_handler(func=lambda message: message.text == "Посмотреть весь каталог")
 def get_all_catalog(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    for bouquet in data_base:
-        item=types.KeyboardButton(bouquet['name'])
-        markup.add(item)
-        bot.send_message(
-            message.chat.id,
-            f'{bouquet['name']}\nЦена:{bouquet['price']}',
-            reply_markup=markup
-            )
-
-@bot.message_handler(func=lambda message: message.text in ALL_BOUQUETS_NAME)
-def get_card_bouquet(message):
     markup = types.InlineKeyboardMarkup()
-    btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data=message.text)
-    markup.add(btn1)
     for bouquet in data_base:
-        if message.text == bouquet["name"]:
+        item=types.InlineKeyboardButton(f'{bouquet['name']}\nЦена:{bouquet['price']}', callback_data=bouquet['name'])
+        markup.add(item)
+        ALL_BOUQUETS_NAME.append(bouquet['name'])
+        ALL_BOUQUETS_NAME_AND_PRICE.append(f'{bouquet['name'],bouquet['price']}')
+    bot.send_message(
+        message.chat.id,
+        'К покупке доступны следующие букеты:',
+        reply_markup=markup
+        )
+
+@bot.callback_query_handler(func=lambda call: call.data in ALL_BOUQUETS_NAME)
+def get_card_bouquet(call):
+    markup = types.InlineKeyboardMarkup()
+    for bouquet in data_base:
+        if call.data == bouquet["name"]:
+            btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data=f'{bouquet['name'],bouquet['price']}')
+            markup.add(btn1)
             with open(bouquet["img"], 'rb') as file:
                 bot.send_photo(
-                    message.chat.id,
+                    call.message.chat.id,
                     photo=file,
                     reply_markup=markup,
                     caption=f'{bouquet["name"]}\n{bouquet["structure"]}\n{bouquet["meaning"]}\nЦена:{bouquet["price"]}\n',
@@ -78,17 +80,18 @@ def get_card_bouquet(message):
     item2 = types.KeyboardButton("Посмотреть весь каталог")
     markdown.add(item1, item2)
     bot.send_message(
-        message.chat.id,
+        call.message.chat.id,
         "*Хотите что то еще более уникальное? Подберите другой букет из нашей коллекции или закажите консультацию флориста*",
         reply_markup=markdown,
         parse_mode='MarkdownV2',
     )
 
 
-@bot.callback_query_handler(func=lambda call: call.data in ALL_BOUQUETS_NAME)
+@bot.callback_query_handler(func=lambda call: call.data in ALL_BOUQUETS_NAME_AND_PRICE)
 def order(call):
     user_data = {}
-    user_data["bouquet"] = call.data
+    print(call.data.split(',')[1])
+    user_data["bouquet"] = call.data.split(',')[0]
     msg = bot.send_message(call.message.chat.id, "Укажите ваши ФИО")
     bot.register_next_step_handler(msg, get_buyer_name, user_data=user_data)
 
@@ -118,6 +121,7 @@ def get_time(message, user_data):
     bot.register_next_step_handler(msg, get_promo, user_data=user_data)
 
 def get_promo(message, user_data):
+    bouquet_price = call.data.split(',')[1]
     user_data["promo"] = message.text    
     with open('users_data.json', 'r+', encoding="utf-8") as file:         
         orders = json.load(file)
