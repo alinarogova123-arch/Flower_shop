@@ -13,6 +13,7 @@ BOUQUETS_FOR_ORDER = []
 env = Env()
 env.read_env()
 manager_id = env.str("MANAGER_ID")
+courier_id = env.str("COURIER_ID")
 tg_bot_token = env.str("POSTING_TELEGRAM_BOT_API_KEY")
 payment_token = env.str("TOKEN_PAYMENT")
 bot=telebot.TeleBot(tg_bot_token)
@@ -151,9 +152,8 @@ def get_promo(message, user_data):
     with open('users_data.json','w+', encoding="utf-8") as file:
         json.dump(orders, file, ensure_ascii=False)
 
-    # Отправка заказа курьеру, для теста подставлен message.chat.id
     bot.send_message(
-        message.chat.id,
+        courier_id,
         f"Новый заказ: {user_data}\nСкидка: {discount}%\nИтог: {final_price}р"
     )
     markup = types.InlineKeyboardMarkup()
@@ -348,8 +348,7 @@ def get_user_name(message, byuer_phone_number):
         reply_markup=markdown,
         parse_mode='MarkdownV2',
     )
-    # Отправка контактных данных флористу, для теста подставлен message.chat.id
-    bot.send_message(message.chat.id, f"Имя: {byuer_user_name} Номер телефона: {byuer_phone_number}")
+    bot.send_message(manager_id, f"Имя: {byuer_user_name} Номер телефона: {byuer_phone_number}")
 
 
 @bot.callback_query_handler(func=lambda call: True)
