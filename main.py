@@ -330,6 +330,7 @@ def consultation(message):
     bot.register_next_step_handler(msg, get_phone_number)
 
 def get_phone_number(message):
+    if handle_restart(message): return
     msg = bot.send_message(
     message.chat.id,
     "Укажите ваше имя, и наш флорист перезвонит вам в течение 20 минут"
@@ -337,6 +338,7 @@ def get_phone_number(message):
     bot.register_next_step_handler(msg, get_user_name, byuer_phone_number = message.text)
 
 def get_user_name(message, byuer_phone_number):
+    if handle_restart(message): return
     byuer_user_name = message.text
     bot.send_message(
         message.chat.id,
