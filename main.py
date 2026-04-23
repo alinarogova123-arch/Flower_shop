@@ -32,6 +32,8 @@ def request_for_consent(message):
     item1=types.KeyboardButton("Подтвердить")
     item2=types.KeyboardButton("Отказаться")
     markup.add(item1, item2)
+    with open('Consent.pdf', 'rb') as file:
+        bot.send_document(message.chat.id, file)
     bot.send_message(
         message.chat.id,
         "Подтведите согласие на обработку персональных данных"
@@ -149,6 +151,7 @@ def get_promo(message, user_data):
     with open('users_data.json','w+', encoding="utf-8") as file:
         json.dump(orders, file, ensure_ascii=False)
 
+    # Отправка заказа курьеру, для теста подставлен message.chat.id
     bot.send_message(
         message.chat.id,
         f"Новый заказ: {user_data}\nСкидка: {discount}%\nИтог: {final_price}р"
@@ -273,6 +276,7 @@ def get_user_name(message, byuer_phone_number):
         reply_markup=markdown,
         parse_mode='MarkdownV2',
     )
+    # Отправка контактных данных флористу, для теста подставлен message.chat.id
     bot.send_message(message.chat.id, f"Имя: {byuer_user_name} Номер телефона: {byuer_phone_number}")
 
 
