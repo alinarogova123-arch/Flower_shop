@@ -341,7 +341,7 @@ def get_user_name(message, byuer_phone_number):
         )
     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Подобрать букет")
-    item2 = types.KeyboardButton("Посмотреть всю коллекцию")
+    item2 = types.KeyboardButton("Посмотреть весь каталог")
     markdown.add(item1, item2)
     bot.send_message(
         message.chat.id,
