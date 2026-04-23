@@ -30,6 +30,7 @@ for bouquet in data_base:
 
 @bot.message_handler(func=lambda message: message.text == '/start' or message.text == 'Отказаться')
 def request_for_consent(message):
+    bot.clear_step_handler_by_chat_id(message.chat.id) 
     markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1=types.KeyboardButton("Подтвердить")
     item2=types.KeyboardButton("Отказаться")
