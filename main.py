@@ -216,9 +216,8 @@ def get_catalog(message):
     item1=types.KeyboardButton("До 500")
     item2=types.KeyboardButton("До 1000")
     item3=types.KeyboardButton("До 2000")
-    item4=types.KeyboardButton("Больше")
-    item5=types.KeyboardButton("Не важно")
-    markup.add(item1, item2, item3, item4, item5)
+    item4=types.KeyboardButton("Не важно")
+    markup.add(item1, item2, item3, item4)
     bot.send_message(
         message.chat.id,
         "На какую сумму рассчитываете?"
@@ -230,7 +229,6 @@ def get_catalog(message):
     "До 500",
     "До 1000",
     "До 2000",
-    "Больше",
     "Не важно"
     ]
 )
@@ -238,7 +236,7 @@ def message_reply_next(message):
     BOUQUETS_FOR_ORDER.clear()
     for bouquet in data_base:
         if bouquet["name"] in BOUQUETS_FOR_OCCASION_NAME:
-            if message.text == "Не важно" or message.text == bouquet["price_up_to"]:
+            if message.text == "Не важно" or message.text in bouquet["price_up_to"]:
                 BOUQUETS_FOR_ORDER.append(bouquet["name"])
     if len(BOUQUETS_FOR_ORDER) == 1:
         markup = types.InlineKeyboardMarkup()
