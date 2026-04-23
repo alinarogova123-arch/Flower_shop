@@ -330,7 +330,7 @@ def get_user_name(message, byuer_phone_number):
             caption=data_base[flowers_number]["name"] + data_base[flowers_number]["structure"]+data_base[flowers_number]["meaning"]+data_base[flowers_number]["price"],
         )
     markdown = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    item1 = types.KeyboardButton("Заказать консультацию")
+    item1 = types.KeyboardButton("Подобрать букет")
     item2 = types.KeyboardButton("Посмотреть всю коллекцию")
     markdown.add(item1, item2)
     bot.send_message(
