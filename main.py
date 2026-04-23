@@ -7,7 +7,7 @@ from environs import Env
 ALL_BOUQUETS_NAME = []
 BOUQUETS_FOR_OCCASION_NAME = []
 BOUQUETS_FOR_ORDER = []
-ALL_BOUQUETS_NAME_AND_PRICE = []
+ALL_BOUQUETS_FORMATTED_NAME = []
 
 
 env = Env()
@@ -56,22 +56,21 @@ def start_menu(message):
 def get_all_catalog(message):
     markup = types.InlineKeyboardMarkup()
     for bouquet in data_base:
-        item=types.InlineKeyboardButton(f'{bouquet['name']}\nЦена:{bouquet['price']}', callback_data=bouquet['name'])
+        item=types.InlineKeyboardButton(f'{bouquet['name']}\nЦена:{bouquet['price']}', callback_data=f' {bouquet['name']}')
         markup.add(item)
-        ALL_BOUQUETS_NAME.append(bouquet['name'])
-        ALL_BOUQUETS_NAME_AND_PRICE.append(f'{bouquet['name'],bouquet['price']}')
+        ALL_BOUQUETS_FORMATTED_NAME.append(f' {bouquet['name']}')
     bot.send_message(
         message.chat.id,
         'К покупке доступны следующие букеты:',
         reply_markup=markup
         )
 
-@bot.callback_query_handler(func=lambda call: call.data in ALL_BOUQUETS_NAME)
+@bot.callback_query_handler(func=lambda call: call.data in ALL_BOUQUETS_FORMATTED_NAME)
 def get_card_bouquet(call):
     markup = types.InlineKeyboardMarkup()
     for bouquet in data_base:
-        if call.data == bouquet["name"]:
-            btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data=f'{bouquet['name'],bouquet['price']}')
+        if call.data == f' {bouquet["name"]}':
+            btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data=bouquet['name'])
             markup.add(btn1)
             with open(bouquet["img"], 'rb') as file:
                 bot.send_photo(
@@ -92,11 +91,10 @@ def get_card_bouquet(call):
     )
 
 
-@bot.callback_query_handler(func=lambda call: call.data in ALL_BOUQUETS_NAME_AND_PRICE)
+@bot.callback_query_handler(func=lambda call: call.data in ALL_BOUQUETS_NAME)
 def order(call):
     user_data = {}
-    print(call.data.split(',')[1])
-    user_data["bouquet"] = call.data.split(',')[0]
+    user_data["bouquet"] = call.data
     msg = bot.send_message(call.message.chat.id, "Укажите ваши ФИО")
     bot.register_next_step_handler(msg, get_buyer_name, user_data=user_data)
 
@@ -126,7 +124,7 @@ def get_time(message, user_data):
     bot.register_next_step_handler(msg, get_promo, user_data=user_data)
 
 def get_promo(message, user_data):
-    bouquet_price = call.data.split(',')[1]
+
     user_data["promo"] = message.text    
 
     discount = promo_codes.get(message.text, 0)
