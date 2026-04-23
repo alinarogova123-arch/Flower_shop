@@ -4,10 +4,10 @@ import random
 from telebot import types
 from environs import Env
 
+
 ALL_BOUQUETS_NAME = []
 BOUQUETS_FOR_OCCASION_NAME = []
 BOUQUETS_FOR_ORDER = []
-ALL_BOUQUETS_FORMATTED_NAME = []
 
 
 env = Env()
@@ -60,18 +60,17 @@ def get_all_catalog(message):
     for bouquet in data_base:
         item=types.InlineKeyboardButton(f'{bouquet['name']}\nЦена:{bouquet['price']}', callback_data=f' {bouquet['name']}')
         markup.add(item)
-        ALL_BOUQUETS_FORMATTED_NAME.append(f' {bouquet['name']}')
     bot.send_message(
         message.chat.id,
         'К покупке доступны следующие букеты:',
         reply_markup=markup
         )
 
-@bot.callback_query_handler(func=lambda call: call.data in ALL_BOUQUETS_FORMATTED_NAME)
+@bot.callback_query_handler(func=lambda call: call.data[1::] in ALL_BOUQUETS_NAME)
 def get_card_bouquet(call):
     markup = types.InlineKeyboardMarkup()
     for bouquet in data_base:
-        if call.data == f' {bouquet["name"]}':
+        if call.data[1::] == bouquet["name"]:
             btn1 = types.InlineKeyboardButton(text="Заказать букет", callback_data=bouquet['name'])
             markup.add(btn1)
             with open(bouquet["img"], 'rb') as file:
