@@ -3,6 +3,7 @@ import telebot
 import random
 from telebot import types
 from environs import Env
+from datetime import datetime, timezone, timedelta
 
 
 ALL_BOUQUETS_NAME = []
@@ -359,7 +360,25 @@ def get_user_name(message, byuer_phone_number):
         reply_markup=markdown,
         parse_mode='MarkdownV2',
     )
-    bot.send_message(manager_id, f"Имя: {byuer_user_name} Номер телефона: {byuer_phone_number}")
+
+    timestamp = message.date
+    dt_object = datetime.fromtimestamp(timestamp, tz=timezone.utc)
+    msk_time = dt_object + timedelta(hours=3)
+    formatted_date = msk_time.strftime('%Y-%m-%d %H:%M:%S')
+
+    with open('consultations_requests.json', 'r+', encoding="utf-8") as file:         
+        consultations = json.load(file)
+    consultation = {
+        "name": byuer_user_name,
+        "phone_number": byuer_phone_number,
+        "time": formatted_date,
+    }
+    consultations.append(consultation)
+    
+    with open('consultations_requests.json','w+', encoding="utf-8") as file:
+        json.dump(consultations, file, ensure_ascii=False)
+
+    bot.send_message(manager_id, f"Новый запрос на консультацию, Имя: {byuer_user_name} Номер телефона: {byuer_phone_number} Время: {formatted_date}")
 
 
 @bot.callback_query_handler(func=lambda call: True)
